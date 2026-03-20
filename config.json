@@ -9,8 +9,8 @@
     "ff_dim": 512,
     "num_blocks": 3,
     "dropout": 0.1,
-    "num_samples": 20000,
-    "max_vocab": 10000
+    "num_samples": 50000,
+    "max_vocab": 15000
   },
   "sft": {
     "epochs": 200,
