@@ -74,8 +74,10 @@ class LoRALinear(nn.Module):
         # A is initialized with small random values (Kaiming), B starts at zero.
         # Starting B at zero means the adapter has NO effect at the start —
         # the model begins identical to the frozen one and gradually learns.
-        self.lora_A = nn.Parameter(torch.randn(in_features, rank) * math.sqrt(2.0 / in_features))
-        self.lora_B = nn.Parameter(torch.zeros(rank, out_features))
+        # Create on the same device as the original layer (critical for GPU training)
+        device = original.weight.device
+        self.lora_A = nn.Parameter(torch.randn(in_features, rank, device=device) * math.sqrt(2.0 / in_features))
+        self.lora_B = nn.Parameter(torch.zeros(rank, out_features, device=device))
         self.scaling: float = alpha / rank
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
