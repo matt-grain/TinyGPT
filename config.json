@@ -1,6 +1,6 @@
 {
   "pretrain": {
-    "epochs": 30,
+    "epochs": 100,
     "batch_size": 64,
     "learning_rate": 1e-3,
     "context_length": 64,
@@ -13,19 +13,19 @@
     "max_vocab": 10000
   },
   "sft": {
-    "epochs": 50,
+    "epochs": 200,
     "batch_size": 4,
     "learning_rate": 5e-5,
     "special_tokens": ["<|user|>", "<|assistant|>", "<|end|>"]
   },
   "dpo": {
-    "epochs": 30,
+    "epochs": 100,
     "learning_rate": 1e-5,
     "beta": 0.1,
     "special_tokens": ["<|user|>", "<|assistant|>", "<|end|>"]
   },
   "lora": {
-    "epochs": 10,
+    "epochs": 30,
     "batch_size": 64,
     "learning_rate": 1e-3,
     "rank": 4,

@@ -29,12 +29,8 @@ class TransformerBlock(nn.Module):
         # Attention: softmax(Q·K^T / sqrt(d)) × V → context-enriched output.
         # If Q came from a DIFFERENT source than K,V → cross-attention (translation).
         # See attention_qkv_explained.md for full worked example.
-        self.attention = nn.MultiheadAttention(
-            embed_dim, num_heads, dropout=dropout, batch_first=True
-        )
-        self.ffn = nn.Sequential(
-            nn.Linear(embed_dim, ff_dim), nn.ReLU(), nn.Linear(ff_dim, embed_dim)
-        )
+        self.attention = nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout, batch_first=True)
+        self.ffn = nn.Sequential(nn.Linear(embed_dim, ff_dim), nn.ReLU(), nn.Linear(ff_dim, embed_dim))
         # LayerNorm (not BatchNorm!) — normalizes across the FEATURE dimension per token.
         # Why not BatchNorm? (1) Variable sequence lengths: position 50 in different sentences
         # are different words, unlike pixel (14,14) which is always "center of image".

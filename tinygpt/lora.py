@@ -74,9 +74,7 @@ class LoRALinear(nn.Module):
         # A is initialized with small random values (Kaiming), B starts at zero.
         # Starting B at zero means the adapter has NO effect at the start —
         # the model begins identical to the frozen one and gradually learns.
-        self.lora_A = nn.Parameter(
-            torch.randn(in_features, rank) * math.sqrt(2.0 / in_features)
-        )
+        self.lora_A = nn.Parameter(torch.randn(in_features, rank) * math.sqrt(2.0 / in_features))
         self.lora_B = nn.Parameter(torch.zeros(rank, out_features))
         self.scaling: float = alpha / rank
 
@@ -147,9 +145,7 @@ def save_lora_adapter(model: TinyGPT, path: Path) -> None:
     This enables the swappable-adapter pattern: ship one frozen base model
     and many small adapter files, loading whichever personality you need.
     """
-    lora_state = {
-        k: v for k, v in model.state_dict().items() if "lora_A" in k or "lora_B" in k
-    }
+    lora_state = {k: v for k, v in model.state_dict().items() if "lora_A" in k or "lora_B" in k}
     torch.save(lora_state, path)
     size_kb = path.stat().st_size / 1024
     print(f"LoRA adapter saved: {path} ({size_kb:.0f} KB)")

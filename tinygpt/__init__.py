@@ -7,15 +7,15 @@ Every module contains detailed comments explaining WHY things work.
 
 from __future__ import annotations
 
+from tinygpt.device import get_device
+from tinygpt.generate import generate, generate_answer
 from tinygpt.model import TinyGPT, TransformerBlock
 from tinygpt.tokenizer import Tokenizer
-from tinygpt.generate import generate, generate_answer
-from tinygpt.device import get_device
 
 __all__ = [
     "TinyGPT",
-    "TransformerBlock",
     "Tokenizer",
+    "TransformerBlock",
     "generate",
     "generate_answer",
     "get_device",

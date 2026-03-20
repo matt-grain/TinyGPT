@@ -9,10 +9,11 @@ Dataset classes for TinyGPT pre-training and supervised fine-tuning (SFT).
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import numpy as np
 import torch
 import torch.utils.data
-from typing import Callable
 
 
 class TextDataset(torch.utils.data.Dataset):

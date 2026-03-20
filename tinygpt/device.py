@@ -1,6 +1,7 @@
 """Device detection for GPU/CPU/MPS auto-selection (Colab-ready)."""
 
 from __future__ import annotations
+
 import torch
 
 

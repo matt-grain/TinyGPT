@@ -73,6 +73,7 @@ def get_sequence_log_prob(
     prompt_ids: list[int],
     answer_ids: list[int],
     context_length: int,
+    device: torch.device | None = None,
 ) -> torch.Tensor:
     """Compute log P(answer | prompt) for a given model.
 
@@ -98,8 +99,8 @@ def get_sequence_log_prob(
     if len(full_ids) > context_length:
         full_ids = full_ids[:context_length]
 
-    x = torch.tensor(full_ids[:-1]).unsqueeze(0)  # input (all but last)
-    y = torch.tensor(full_ids[1:]).unsqueeze(0)  # target (all but first)
+    x = torch.tensor(full_ids[:-1], device=device).unsqueeze(0)  # input (all but last)
+    y = torch.tensor(full_ids[1:], device=device).unsqueeze(0)  # target (all but first)
 
     # TEACHER FORCING: we don't ask the model to generate — we force-feed the
     # answer and ask "what probability did you assign to each word?"
@@ -146,6 +147,7 @@ def dpo_loss(
     rejected_ids: list[int],
     context_length: int,
     beta: float = 0.1,
+    device: torch.device | None = None,
 ) -> tuple[torch.Tensor, float]:
     """DPO loss for one preference pair.
 
@@ -175,19 +177,13 @@ def dpo_loss(
     sigmoid squashes to [0,1], -log makes it a proper loss (0 = perfect).
     """
     model.train()
-    log_prob_chosen = get_sequence_log_prob(
-        model, prompt_ids, chosen_ids, context_length
-    )
-    log_prob_rejected = get_sequence_log_prob(
-        model, prompt_ids, rejected_ids, context_length
-    )
+    log_prob_chosen = get_sequence_log_prob(model, prompt_ids, chosen_ids, context_length, device)
+    log_prob_rejected = get_sequence_log_prob(model, prompt_ids, rejected_ids, context_length, device)
 
     with torch.no_grad():
-        ref_log_prob_chosen = get_sequence_log_prob(
-            ref_model, prompt_ids, chosen_ids, context_length
-        )
+        ref_log_prob_chosen = get_sequence_log_prob(ref_model, prompt_ids, chosen_ids, context_length, device)
         ref_log_prob_rejected = get_sequence_log_prob(
-            ref_model, prompt_ids, rejected_ids, context_length
+            ref_model, prompt_ids, rejected_ids, context_length, device
         )
 
     log_ratio_chosen = log_prob_chosen - ref_log_prob_chosen
@@ -242,9 +238,7 @@ def main() -> None:
     new_vocab_size = base_vocab_size + len(tokens_to_add)
     del raw_ckpt  # free memory before the proper load
 
-    model, tokenizer, hparams = load_checkpoint_with_resize(
-        sft_path, new_vocab_size, device
-    )
+    model, tokenizer, hparams = load_checkpoint_with_resize(sft_path, new_vocab_size, device)
     context_length: int = hparams["context_length"]
 
     tokenizer.add_special_tokens(special_tokens)
@@ -267,8 +261,7 @@ def main() -> None:
         param.requires_grad = False
 
     print(
-        f"Model loaded. Vocab: {tokenizer.vocab_size}, "
-        f"Params: {sum(p.numel() for p in model.parameters()):,}"
+        f"Model loaded. Vocab: {tokenizer.vocab_size}, Params: {sum(p.numel() for p in model.parameters()):,}"
     )
     print("Reference model frozen (identical copy, will NOT be updated)")
 
@@ -304,6 +297,7 @@ def main() -> None:
                 rejected_ids,
                 context_length,
                 beta,
+                device,
             )
 
             optimizer.zero_grad()
@@ -319,9 +313,7 @@ def main() -> None:
             avg_margin = total_margin / len(PREFERENCE_PAIRS)
             # Reward margin > 0 means model prefers chosen over rejected. Good!
             # Reward margin growing means preferences are being learned.
-            print(
-                f"Epoch {epoch + 1:3d} | Loss: {avg_loss:.4f} | Reward margin: {avg_margin:+.4f}"
-            )
+            print(f"Epoch {epoch + 1:3d} | Loss: {avg_loss:.4f} | Reward margin: {avg_margin:+.4f}")
 
     # -----------------------------------------------------------------------
     # 4. Compare SFT (reference) vs DPO (tuned) answers

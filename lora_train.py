@@ -87,9 +87,7 @@ def build_balzac_dataset(
     from tinygpt.tokenizer import Tokenizer
 
     tokens = re.findall(Tokenizer.PATTERN, corpus, re.UNICODE)
-    encoded = np.array(
-        [tokenizer_word_to_id.get(t, unk_id) for t in tokens], dtype=np.int32
-    )
+    encoded = np.array([tokenizer_word_to_id.get(t, unk_id) for t in tokens], dtype=np.int32)
 
     unk_count = sum(1 for t in tokens if t not in tokenizer_word_to_id)
     print(f"Balzac tokens:    {len(tokens):,}")
@@ -102,7 +100,12 @@ def build_balzac_dataset(
 
 
 def train_lora(
-    model, dataloader, vocab_size: int, learning_rate: float, num_epochs: int
+    model,
+    dataloader,
+    vocab_size: int,
+    learning_rate: float,
+    num_epochs: int,
+    device: torch.device | None = None,
 ) -> None:
     """Run the LoRA training loop.
 
@@ -126,6 +129,7 @@ def train_lora(
         num_batches = 0
 
         for x_batch, y_batch in dataloader:
+            x_batch, y_batch = x_batch.to(device), y_batch.to(device)
             logits = model(x_batch)
             loss = F.cross_entropy(logits.view(-1, vocab_size), y_batch.view(-1))
 
@@ -163,9 +167,7 @@ if __name__ == "__main__":
     # 2. Generate BEFORE LoRA (Hugo baseline)
     # ----------------------------------------
     print("=== BEFORE LoRA (Hugo style) ===")
-    before_text = generate(
-        model, tokenizer, "La maison était", context_length, device=device
-    )
+    before_text = generate(model, tokenizer, "La maison était", context_length, device=device)
     print(before_text)
     print()
 
@@ -186,9 +188,7 @@ if __name__ == "__main__":
         context_length,
         num_samples=cfg["num_samples"],
     )
-    dataloader = torch.utils.data.DataLoader(
-        dataset, batch_size=cfg["batch_size"], shuffle=True
-    )
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=cfg["batch_size"], shuffle=True)
 
     # ----------------------------------------
     # 5. Train LoRA (only adapters update!)
@@ -199,6 +199,7 @@ if __name__ == "__main__":
         vocab_size,
         learning_rate=cfg["learning_rate"],
         num_epochs=cfg["epochs"],
+        device=device,
     )
 
     # ----------------------------------------
@@ -211,9 +212,7 @@ if __name__ == "__main__":
     # 7. Generate AFTER LoRA (Balzac-adapted)
     # ----------------------------------------
     print("\n=== AFTER LoRA (Balzac-adapted) ===")
-    after_text = generate(
-        model, tokenizer, "La maison était", context_length, device=device
-    )
+    after_text = generate(model, tokenizer, "La maison était", context_length, device=device)
     print(after_text)
     print()
 
@@ -224,9 +223,7 @@ if __name__ == "__main__":
     seeds = ["Le vieillard", "Paris", "L' argent"]
     for seed in seeds:
         print(f"\nSeed: '{seed}'")
-        adapted = generate(
-            model, tokenizer, seed, context_length, num_words=30, device=device
-        )
+        adapted = generate(model, tokenizer, seed, context_length, num_words=30, device=device)
         print(f"  Balzac LoRA: {adapted}")
 
     # ----------------------------------------

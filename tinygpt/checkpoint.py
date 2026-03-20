@@ -23,7 +23,6 @@ import torch
 from tinygpt.model import TinyGPT
 from tinygpt.tokenizer import Tokenizer
 
-
 # ---------------------------------------------------------------------------
 # Discovery
 # ---------------------------------------------------------------------------
@@ -130,9 +129,7 @@ def _build_tokenizer(checkpoint: dict[str, Any]) -> Tokenizer:
     to int explicitly to guarantee the dict[int, str] contract.
     """
     word_to_id: dict[str, int] = checkpoint["word_to_id"]
-    id_to_word: dict[int, str] = {
-        int(k): v for k, v in checkpoint["id_to_word"].items()
-    }
+    id_to_word: dict[int, str] = {int(k): v for k, v in checkpoint["id_to_word"].items()}
     return Tokenizer(word_to_id, id_to_word)
 
 

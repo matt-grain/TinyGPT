@@ -66,9 +66,7 @@ class Tokenizer:
 
         # How many tokens will become <UNK>?
         unk_count = sum(count for word, count in freq.items() if word not in word_to_id)
-        print(
-            f"Tokens that become <UNK>: {unk_count} ({100 * unk_count / len(tokens):.1f}% of text)"
-        )
+        print(f"Tokens that become <UNK>: {unk_count} ({100 * unk_count / len(tokens):.1f}% of text)")
 
         return cls(word_to_id, id_to_word)
 

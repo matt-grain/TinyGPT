@@ -75,9 +75,7 @@ def main() -> None:
     # -----------------------------------------------------------------------
     checkpoint_path = auto_detect_latest(SNAPSHOT_DIR)
     if checkpoint_path is None:
-        raise FileNotFoundError(
-            f"No pre-trained checkpoint found in {SNAPSHOT_DIR}. Run pretrain.py first."
-        )
+        raise FileNotFoundError(f"No pre-trained checkpoint found in {SNAPSHOT_DIR}. Run pretrain.py first.")
     print(f"Using pre-trained checkpoint: {checkpoint_path}")
 
     # -----------------------------------------------------------------------
@@ -95,9 +93,7 @@ def main() -> None:
 
     # load_checkpoint_with_resize creates a TinyGPT at new_vocab_size and copies
     # all pre-trained weights. New special-token rows stay randomly initialised.
-    model, tokenizer, hparams = load_checkpoint_with_resize(
-        checkpoint_path, new_vocab_size, device
-    )
+    model, tokenizer, hparams = load_checkpoint_with_resize(checkpoint_path, new_vocab_size, device)
 
     # Add the special tokens to the tokenizer vocabulary so encode() and
     # decode() know about <|user|>, <|assistant|>, <|end|>.
@@ -111,10 +107,7 @@ def main() -> None:
 
     total_params = sum(p.numel() for p in model.parameters())
     print(f"Parameters: {total_params:,}")
-    print(
-        f"Vocabulary: {original_vocab_size} → {new_vocab_size} "
-        f"(+{len(SPECIAL_TOKENS)} special tokens)"
-    )
+    print(f"Vocabulary: {original_vocab_size} → {new_vocab_size} (+{len(SPECIAL_TOKENS)} special tokens)")
 
     # -----------------------------------------------------------------------
     # 3. Build SFT dataset
@@ -127,9 +120,7 @@ def main() -> None:
         assistant_id=assistant_id,
         end_id=end_id,
     )
-    dataloader = torch.utils.data.DataLoader(
-        dataset, batch_size=BATCH_SIZE, shuffle=True
-    )
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     # -----------------------------------------------------------------------
     # 4. Training loop
@@ -187,9 +178,7 @@ def main() -> None:
         avg_loss = total_loss / total_tokens if total_tokens > 0 else 0.0
 
         if (epoch + 1) % 10 == 0:
-            print(
-                f"Epoch {epoch + 1:3d} | Loss: {avg_loss:.4f} | Perplexity: {np.exp(avg_loss):.1f}"
-            )
+            print(f"Epoch {epoch + 1:3d} | Loss: {avg_loss:.4f} | Perplexity: {np.exp(avg_loss):.1f}")
 
     # -----------------------------------------------------------------------
     # 5. Save SFT checkpoint

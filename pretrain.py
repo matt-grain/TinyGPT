@@ -63,9 +63,7 @@ DROPOUT: float = cfg["dropout"]
 MAX_VOCAB: int = cfg["max_vocab"]
 
 BATCH_SIZE: int = cfg["batch_size"]
-NUM_SAMPLES: int = cfg[
-    "num_samples"
-]  # random windows drawn per epoch (see TextDatasetSmall)
+NUM_SAMPLES: int = cfg["num_samples"]  # random windows drawn per epoch (see TextDatasetSmall)
 NB_EPOCHS: int = cfg["epochs"]
 LR: float = cfg["learning_rate"]
 SAVE_EVERY: int = 3  # save checkpoint + generate sample every N epochs
@@ -177,9 +175,7 @@ if __name__ == "__main__":
     # wasteful and slow.  Random sampling gives a manageable epoch size while
     # still covering the whole corpus over many epochs.
     dataset = TextDatasetSmall(encoded, WORD_CONTEXT_LENGTH, num_samples=NUM_SAMPLES)
-    dataloader = torch.utils.data.DataLoader(
-        dataset, batch_size=BATCH_SIZE, shuffle=True
-    )
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     # ------------------------------------------------------------------
     # 4. Peek at one batch (educational sanity check)
@@ -187,16 +183,10 @@ if __name__ == "__main__":
     x_batch, y_batch = next(iter(dataloader))
     print(f"Input batch shape:  {x_batch.shape}")  # (64, 64)
     print(f"Target batch shape: {y_batch.shape}")  # (64, 64) — shifted by 1
-    print(
-        f"First sequence input:  {' '.join(tokenizer._id_to_word[i.item()] for i in x_batch[0][:20])}"
-    )
-    print(
-        f"First sequence target: {' '.join(tokenizer._id_to_word[i.item()] for i in y_batch[0][:20])}"
-    )
+    print(f"First sequence input:  {' '.join(tokenizer._id_to_word[i.item()] for i in x_batch[0][:20])}")
+    print(f"First sequence target: {' '.join(tokenizer._id_to_word[i.item()] for i in y_batch[0][:20])}")
     print(f"\nDataset size:      {len(dataset):,}")
-    print(
-        f"Batches per epoch: {len(dataloader)}"
-    )  # ≈ 312 with NUM_SAMPLES=20000, BATCH_SIZE=64
+    print(f"Batches per epoch: {len(dataloader)}")  # ≈ 312 with NUM_SAMPLES=20000, BATCH_SIZE=64
 
     # ------------------------------------------------------------------
     # 5. Create model
@@ -226,9 +216,7 @@ if __name__ == "__main__":
     # Track PERPLEXITY (e^loss) to compare across vocabularies:
     #   random perplexity ≈ vocab_size.  Perplexity = 100 means the model is
     #   as uncertain as a uniform distribution over 100 words at each step.
-    print(
-        f"Loss baseline (random):    {math.log(vocab_size):.2f}  (= log({vocab_size}))"
-    )
+    print(f"Loss baseline (random):    {math.log(vocab_size):.2f}  (= log({vocab_size}))")
     print(f"Perplexity baseline:       {vocab_size}  (random guessing)\n")
 
     # ------------------------------------------------------------------
@@ -249,11 +237,7 @@ if __name__ == "__main__":
         # Reload weights into the already-constructed model so we keep our
         # freshly built tokenizer (same vocab, just re-using weights).
         ckpt_raw = torch.load(resume_path, weights_only=False)
-        filtered_state = {
-            k: v
-            for k, v in ckpt_raw["model_state_dict"].items()
-            if "causal_mask" not in k
-        }
+        filtered_state = {k: v for k, v in ckpt_raw["model_state_dict"].items() if "causal_mask" not in k}
         model.load_state_dict(filtered_state, strict=False)
         # Infer start epoch from the filename (e.g. tinygpt_pretrain_epoch18.pt → 18)
         match = re.search(r"_epoch(\d+)\.pt$", resume_path.name)
@@ -297,16 +281,12 @@ if __name__ == "__main__":
             # Progress print every 50 batches so you know it's alive
             if i % 50 == 0:
                 print(
-                    f"  Epoch {epoch + 1}/{NB_EPOCHS} | "
-                    f"Batch {i}/{len(dataloader)} | "
-                    f"Loss: {loss.item():.4f}"
+                    f"  Epoch {epoch + 1}/{NB_EPOCHS} | Batch {i}/{len(dataloader)} | Loss: {loss.item():.4f}"
                 )
 
         avg_loss = total_loss / num_batches
         perplexity = math.exp(avg_loss)
-        print(
-            f"\nEpoch {epoch + 1} complete | Avg loss: {avg_loss:.4f} | Perplexity: {perplexity:.1f}"
-        )
+        print(f"\nEpoch {epoch + 1} complete | Avg loss: {avg_loss:.4f} | Perplexity: {perplexity:.1f}")
 
         # Save checkpoint + generate sample every SAVE_EVERY epochs
         if (epoch + 1) % SAVE_EVERY == 0:
