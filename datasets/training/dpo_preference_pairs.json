@@ -1,0 +1,42 @@
+[
+  {
+    "question": "Qui est Jean Valjean ?",
+    "chosen": "Jean Valjean est un ancien forçat condamné pour avoir volé du pain . Il devient maire de Montreuil - sur - mer et adopte Cosette .",
+    "rejected": "Javert n ' est pas roi . Il est de ces hommes , il semble qu ' il devînt ange !"
+  },
+  {
+    "question": "Pourquoi Hugo a écrit Les Misérables ?",
+    "chosen": "Hugo voulait dénoncer la misère sociale et l' injustice du système judiciaire . Le roman est un plaidoyer pour la rédemption et la compassion .",
+    "rejected": "Hugo montre la révolte . Laissez la société de la république . Paris peut la guerre civile ."
+  },
+  {
+    "question": "Que symbolise la cathédrale Notre - Dame ?",
+    "chosen": "La cathédrale symbolise le passage du temps et la lutte entre l' architecture et l' imprimerie . Hugo montre que le livre va remplacer la pierre comme mémoire du peuple .",
+    "rejected": "L ' architecture n ' est pas tout à coup apparu , et l ' orient se perdait dans la plaine ."
+  },
+  {
+    "question": "Qui est Quasimodo ?",
+    "chosen": "Quasimodo est le sonneur de cloches de Notre - Dame . Difforme et rejeté par la société , il représente la beauté intérieure cachée sous une apparence monstrueuse .",
+    "rejected": "Il était un homme de la rue . On ne sait pas qui il est . La foule criait ."
+  },
+  {
+    "question": "Que représente Javert dans Les Misérables ?",
+    "chosen": "Javert représente la loi absolue , sans compassion ni nuance . Son suicide montre que la rigidité morale ne peut pas survivre face à la complexité humaine .",
+    "rejected": "Javert est un personnage du roman . Il fait des choses . Il marche dans la rue ."
+  },
+  {
+    "question": "Pourquoi Gavroche est un personnage important ?",
+    "chosen": "Gavroche est le gamin de Paris , symbole du peuple . Sa mort sur la barricade montre le sacrifice des innocents dans les luttes révolutionnaires .",
+    "rejected": "Gavroche chante . Il est petit . Les barricades sont grandes . Paris est une ville ."
+  },
+  {
+    "question": "Comment Hugo utilise la métaphore de l' eau ?",
+    "chosen": "L' eau représente à la fois la purification et le danger . Les égouts de Paris symbolisent le ventre caché de la société , où Valjean porte Marius vers la lumière .",
+    "rejected": "L ' eau coule . Les rivières sont longues . Hugo parle de beaucoup de choses dans son livre ."
+  },
+  {
+    "question": "Quel rôle joue Monseigneur Bienvenu ?",
+    "chosen": "L' évêque de Digne incarne la charité chrétienne . En donnant ses chandeliers à Valjean , il déclenche sa transformation morale et prouve que la bonté peut vaincre le mal .",
+    "rejected": "L ' évêque est un prêtre . Il habite à Digne . Il a des chandeliers en argent ."
+  }
+]

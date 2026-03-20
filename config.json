@@ -1,0 +1,35 @@
+{
+  "pretrain": {
+    "epochs": 30,
+    "batch_size": 64,
+    "learning_rate": 1e-3,
+    "context_length": 64,
+    "embed_dim": 128,
+    "num_heads": 4,
+    "ff_dim": 512,
+    "num_blocks": 3,
+    "dropout": 0.1,
+    "num_samples": 20000,
+    "max_vocab": 10000
+  },
+  "sft": {
+    "epochs": 50,
+    "batch_size": 4,
+    "learning_rate": 5e-5,
+    "special_tokens": ["<|user|>", "<|assistant|>", "<|end|>"]
+  },
+  "dpo": {
+    "epochs": 30,
+    "learning_rate": 1e-5,
+    "beta": 0.1,
+    "special_tokens": ["<|user|>", "<|assistant|>", "<|end|>"]
+  },
+  "lora": {
+    "epochs": 10,
+    "batch_size": 64,
+    "learning_rate": 1e-3,
+    "rank": 4,
+    "alpha": 8,
+    "num_samples": 15000
+  }
+}
