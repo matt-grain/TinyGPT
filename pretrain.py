@@ -114,11 +114,8 @@ if __name__ == "__main__":
     # auto_detect_latest() finds the highest-epoch file automatically —
     # no hardcoded filename needed.
     # ------------------------------------------------------------------
-    latest_ckpt = auto_detect_latest(SNAPSHOT_DIR, prefix=CHECKPOINT_PREFIX)
-    if latest_ckpt is not None:
-        print(f"Found checkpoint: {latest_ckpt}  — running inference only.")
-        run_inference(SNAPSHOT_DIR, device)
-        raise SystemExit(0)
+    # If a checkpoint exists, we'll resume training from it (not inference-only).
+    # The resume logic is in section 5 below, after model construction.
 
     # ------------------------------------------------------------------
     # 1. Load raw text
