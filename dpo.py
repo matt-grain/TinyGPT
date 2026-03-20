@@ -230,7 +230,7 @@ def main() -> None:
     new_vocab_size = None  # determined after loading to know base vocab size
 
     # Peek at the base vocab size to compute new_vocab_size before loading.
-    raw_ckpt: dict = torch.load(sft_path, weights_only=False)
+    raw_ckpt: dict = torch.load(sft_path, weights_only=False, map_location=device)
     base_vocab_size: int = raw_ckpt["vocab_size"]
     # Count only tokens not already present in the checkpoint vocab.
     base_word_to_id: dict[str, int] = raw_ckpt["word_to_id"]

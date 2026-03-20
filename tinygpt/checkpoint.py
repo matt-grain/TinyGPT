@@ -170,7 +170,7 @@ def load_checkpoint(
         hparams   – Dict of embed_dim, num_heads, ff_dim, num_blocks,
                     context_length, vocab_size — useful for logging or resuming.
     """
-    checkpoint: dict[str, Any] = torch.load(path, weights_only=False)
+    checkpoint: dict[str, Any] = torch.load(path, weights_only=False, map_location=device)
     hparams = _hparams_from_checkpoint(checkpoint)
 
     model = TinyGPT(
@@ -230,7 +230,7 @@ def load_checkpoint_with_resize(
         hparams   – Hyperparameter dict reflecting the ORIGINAL checkpoint architecture
                     (vocab_size is the original value, not new_vocab_size).
     """
-    checkpoint: dict[str, Any] = torch.load(path, weights_only=False)
+    checkpoint: dict[str, Any] = torch.load(path, weights_only=False, map_location=device)
     hparams = _hparams_from_checkpoint(checkpoint)
 
     model = TinyGPT(
